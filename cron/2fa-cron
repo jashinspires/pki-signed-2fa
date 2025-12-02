@@ -1,0 +1,2 @@
+# PKI 2FA cron schedule (runs every minute in UTC)
+* * * * * root /usr/local/bin/python3 /app/scripts/log_2fa_cron.py >/dev/null 2>> /data/cron.log

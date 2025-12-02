@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Runtime data
+data/seed.txt
+data/encrypted_seed.txt
+data/cron.log
+data/*.sig
+data/*.enc
+data/*.tar.gz
+data/commit_hash.txt
+data/README_proof.txt
+
+# Cron output
+cron_data/last_code.txt

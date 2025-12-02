@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    container_name: pki-2fa-web
+    environment:
+      STUDENT_ID: "23A91A0542"
+      REPO_URL: "https://github.com/jashinspires/pki-signed-2fa"
+      SEED_ENDPOINT: "https://eajeyq4r3zljog4rpovy2nthda0vtjqf.lambda-url.ap-south-1.on.aws"
+      ENCRYPTED_SEED_PATH: "/data/encrypted_seed.txt"
+      SEED_PATH: "/data/seed.txt"
+      PROOF_SIG_PATH: "/data/proof.sig"
+      PROOF_SIG_ENC_PATH: "/data/proof.sig.enc"
+      PROOF_TAR_PATH: "/data/proof.tar.gz"
+      KEY_DIR: "/data/keys"
+      CRON_LOG: "/data/cron.log"
+      INSTRUCTOR_PUB_PATH: "/data/instructor_public.pem"
+      API_HOST: "0.0.0.0"
+      API_PORT: "8080"
+      TZ: "UTC"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+      - ./cron:/etc/cron.d
+      - ./cron_data:/cron
+    restart: unless-stopped
