@@ -2,7 +2,7 @@
 
 It is **2025**, and your password has definitely been leaked on the dark web.
 
-Welcome to the **PKI-based 2FA Microservice** — a project that proves I understand encryption just enough to be dangerous. While other developers are hardcoding secrets in `.env` files, I decided to suffer through implementing a full Public Key Infrastructure using RSA key pairs, TOTP generation, and Docker containers that actually talk to each other.
+Welcome to the **PKI-based 2FA Microservice** - a project that proves I understand encryption just enough to be dangerous. While other developers are hardcoding secrets in `.env` files, I decided to suffer through implementing a full Public Key Infrastructure using RSA key pairs, TOTP generation, and Docker containers that actually talk to each other.
 
 This is the story of how I stopped worrying and learned to love the **4096-bit Key**.
 
@@ -49,7 +49,7 @@ The flow is pretty straightforward, assuming you enjoy asymmetric cryptography:
 ├── docker-compose.yml   # The orchestration
 └── entrypoint.sh        # Starts Cron + Uvicorn together
 
-
+```
 ## 🚀 How to Deploy This Beast
 
 **Step 1: Generate your Keys**
@@ -142,5 +142,3 @@ This signs your commit hash with **RSA-PSS** and encrypts it with the instructor
 If you survived reading this without your RSA keys getting corrupted, congratulations.
 
 Thanks for reading, and **I will see you in the next one.**
-
-```
