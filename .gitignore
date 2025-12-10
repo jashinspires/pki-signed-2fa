@@ -20,3 +20,6 @@ data/README_proof.txt
 
 # Cron output
 cron_data/last_code.txt
+
+# Codacy local config
+.codacy/
