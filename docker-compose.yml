@@ -6,7 +6,7 @@ services:
     environment:
       STUDENT_ID: "23A91A0542"
       REPO_URL: "https://github.com/jashinspires/pki-signed-2fa"
-      SEED_ENDPOINT: "https://eajeyq4r3zljog4rpovy2nthda0vtjqf.lambda-url.ap-south-1.on.aws"
+      SEED_ENDPOINT: "https://eajeyq4r3zljoq4rpovy2nthda0vtjqf.lambda-url.ap-south-1.on.aws/"
       ENCRYPTED_SEED_PATH: "/data/encrypted_seed.txt"
       SEED_PATH: "/data/seed.txt"
       PROOF_SIG_PATH: "/data/proof.sig"
