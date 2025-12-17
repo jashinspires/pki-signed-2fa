@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import logging
 from datetime import datetime, timezone
 from pathlib import Path
@@ -113,7 +114,7 @@ def generate_totp(seed_hex: str, for_time: Optional[int] = None) -> tuple[str, i
 
     seed_hex = validate_hex_seed(seed_hex)
     base32_seed = hex_to_base32(seed_hex)
-    totp = pyotp.TOTP(base32_seed, digits=6, interval=30, digest="sha1")
+    totp = pyotp.TOTP(base32_seed, digits=6, interval=30, digest=hashlib.sha1)
     code = totp.at(for_time) if for_time else totp.now()
     period = totp.interval
     now = int(for_time or datetime.now(tz=timezone.utc).timestamp())
@@ -126,5 +127,5 @@ def generate_totp(seed_hex: str, for_time: Optional[int] = None) -> tuple[str, i
 def verify_totp(seed_hex: str, code: str, valid_window: int = 1) -> bool:
     seed_hex = validate_hex_seed(seed_hex)
     base32_seed = hex_to_base32(seed_hex)
-    totp = pyotp.TOTP(base32_seed, digits=6, interval=30, digest="sha1")
+    totp = pyotp.TOTP(base32_seed, digits=6, interval=30, digest=hashlib.sha1)
     return totp.verify(code, valid_window=valid_window)

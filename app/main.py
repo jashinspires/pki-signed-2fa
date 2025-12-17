@@ -18,11 +18,12 @@ app = FastAPI(title="PKI 2FA Microservice", version="1.0.0")
 
 
 class DecryptSeedRequest(BaseModel):
-    encrypted_seed: str
+    encrypted_seed: str | None = None
 
 
 class VerifyRequest(BaseModel):
-    code: str
+    code: str | None = None
+    totp: str | None = None
 
 
 class VerifyAliasRequest(BaseModel):
@@ -56,7 +57,12 @@ def _build_totp_payload() -> dict[str, int | str]:
     seed = _read_seed()
     code, remaining = generate_totp(seed)
     LOGGER.info("Generated TOTP code with %s seconds remaining", remaining)
-    return {"code": code, "valid_for": remaining}
+    return {
+        "code": code,
+        "totp": code,
+        "valid_for": remaining,
+        "expires_in": remaining,
+    }
 
 
 def _verify_code(code: str) -> bool:
@@ -73,14 +79,27 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/decrypt-seed")
-async def decrypt_seed(payload: DecryptSeedRequest) -> dict[str, str]:
+async def decrypt_seed(payload: DecryptSeedRequest | None = None) -> dict[str, str]:
     try:
+        encrypted_seed = (payload.encrypted_seed if payload else None) or ""
+        if not encrypted_seed:
+            if not settings.encrypted_seed_path.exists():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Missing encrypted seed (provide in body or store in encrypted_seed.txt)",
+                )
+            encrypted_seed = settings.encrypted_seed_path.read_text(
+                encoding="utf-8"
+            ).strip()
+
         plaintext = rsa_oaep_decrypt(
-            settings.private_key_path(), payload.encrypted_seed
+            settings.private_key_path(), encrypted_seed
         ).decode("utf-8")
         seed = validate_hex_seed(plaintext)
         _write_seed(seed)
         LOGGER.info("Seed decrypted and stored at %s", settings.seed_path)
+    except HTTPException:
+        raise
     except Exception as exc:  # pragma: no cover - guard for validation errors
         LOGGER.exception("Seed processing failed")
         raise HTTPException(status_code=500, detail="Decryption failed") from exc
@@ -100,8 +119,11 @@ async def generate_totp_alias() -> dict[str, int | str]:
 
 @app.post("/verify-2fa")
 async def verify_2fa(payload: VerifyRequest) -> dict[str, bool]:
-    result = _verify_code(payload.code)
-    return {"valid": result}
+    code = (payload.code or payload.totp or "").strip()
+    if not code:
+        raise HTTPException(status_code=400, detail="Missing code")
+    result = _verify_code(code)
+    return {"valid": result, "verified": result}
 
 
 @app.post("/run-totp")

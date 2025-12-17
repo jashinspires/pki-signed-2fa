@@ -15,12 +15,15 @@ fi
 
 if [ -f /app/cron/2fa-cron ]; then
   install -m 0644 /app/cron/2fa-cron /etc/cron.d/2fa-cron
+  # Normalize possible CRLF endings to prevent cron parse failures
+  sed -i 's/\r$//' /etc/cron.d/2fa-cron || true
 fi
 
 mkdir -p /cron
 mkdir -p /data
 touch /data/cron.log
 
-cron
+# Start cron, but never block the API from starting if cron fails.
+cron || echo "cron failed to start" >> /data/cron.log
 
 exec uvicorn app.main:app --host ${API_HOST:-0.0.0.0} --port ${API_PORT:-8080}

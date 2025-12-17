@@ -2,3 +2,7 @@
 cron/2fa-cron text eol=lf
 *.sh text eol=lf
 entrypoint.sh text eol=lf
+
+# Keep crypto/key artifacts and Python sources consistent across OSes
+*.pem text eol=lf
+*.py text eol=lf

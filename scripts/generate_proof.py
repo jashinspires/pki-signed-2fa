@@ -24,6 +24,7 @@ def get_local_paths():
         "data_dir": data_dir,
         "key_dir": key_dir,
         "private_key": key_dir / "student_private.pem",
+        "public_key": key_dir / "student_public.pem",
         "instructor_public": data_dir / "instructor_public.pem",
         "proof_sig": data_dir / "proof.sig",
         "proof_sig_enc": data_dir / "proof.sig.enc",
@@ -71,6 +72,7 @@ def write_readme(commit_hash: str, paths: dict) -> Path:
         "Proof Generation Summary\n"
         f"Timestamp: {timestamp}\n"
         f"Commit Hash: {commit_hash}\n"
+        f"Student Public Key: {paths['public_key']}\n"
         f"Signature: {paths['proof_sig']}\n"
         f"Encrypted Signature: {paths['proof_sig_enc']}\n"
         f"Instructor Public Key: {paths['instructor_public']}\n"
@@ -107,6 +109,13 @@ def main() -> None:
         )
         raise SystemExit(1)
 
+    if not paths["public_key"].exists():
+        logger.error(
+            "Student public key missing at %s",
+            paths["public_key"],
+        )
+        raise SystemExit(1)
+
     commit_hash = write_commit_hash(paths["commit_hash"])
     logger.info("Captured commit hash: %s", commit_hash)
 
@@ -120,6 +129,7 @@ def main() -> None:
     bundle_artifacts(
         [
             paths["commit_hash"],
+            paths["public_key"],
             paths["proof_sig"],
             paths["proof_sig_enc"],
             readme_path,
