@@ -1,6 +1,10 @@
 # Encrypted seed (sensitive)
 encrypted_seed.txt
 
+# Generated files
+encrypted_commit_signature.txt
+test_payload.json
+
 # Python cache
 __pycache__/
 *.pyc
