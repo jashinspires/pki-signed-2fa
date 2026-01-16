@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 import base64
+import sys
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from app.crypto_utils import encrypt_with_public_key, load_private_key, load_public_key, sign_message
 
